@@ -35,6 +35,12 @@ public class Dialogue : MonoBehaviour {
 
 					}
 				}
+				if (triggeringNpc.CompareTag("gate")) {
+					changeText.text = "I hope you bring that baby back ranger!";
+				}
+				if (triggeringNpc.CompareTag("march")) {
+					changeText.text = "The night watch honors your bravery.";
+				}
 				if (triggeringNpc.tag == "NPC2") {
 					changeText.text = "Stop bothering me! Go away!";
 				}
@@ -55,6 +61,9 @@ public class Dialogue : MonoBehaviour {
 				if (triggeringNpc.tag == "NPC7") {
 					changeText.text = "I am a wizard! I love magic!";
 				}
+				if (triggeringNpc.tag == "NPC8") {
+					changeText.text = "Don't mess with me! I'll smash you to bits!";
+				}
 			}
 		} else {
 			npcText.SetActive (false);
@@ -63,14 +72,16 @@ public class Dialogue : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other){
-		if (other.tag == "NPC1" || other.tag == "NPC2"|| other.tag =="NPC3"|| other.tag =="NPC4"||other.tag == "NPC5"|| other.tag =="NPC6"|| other.tag =="NPC7") {
+		if (other.tag == "NPC1" || other.tag == "NPC2"|| other.tag =="NPC3"|| other.tag =="NPC4"||other.tag == "NPC5"|| other.tag =="NPC6"||
+			other.tag =="NPC7" || other.CompareTag("gate") || other.CompareTag("march") || other.CompareTag("NPC8") ) {
 			triggering = true;
 			triggeringNpc = other.gameObject;
 		}
 	}
 
 	void OnTriggerExit(Collider other){
-		if (other.tag == "NPC1" || other.tag =="NPC2"|| other.tag =="NPC3"||other.tag == "NPC4"|| other.tag =="NPC5"|| other.tag =="NPC6"|| other.tag =="NPC7") {
+		if (other.tag == "NPC1" || other.tag =="NPC2"|| other.tag =="NPC3"||other.tag == "NPC4"|| other.tag =="NPC5"|| other.tag =="NPC6"||
+			other.tag =="NPC7" || other.CompareTag("gate") || other.CompareTag("march") || other.CompareTag("NPC8")) {
 			triggering = false;
 			triggeringNpc = null;
 			changeText.text = "Press T to Talk";
