@@ -28,8 +28,8 @@ public class grab : MonoBehaviour {
 
 	private GameObject triggeringApple;
 	private bool inRange;
-	//public GameObject grabText;
-	//public Text grabChangeText;
+	public GameObject grabText;
+	public Text grabChangeText;
 	public GameObject Erika;
 	#endregion
 
@@ -54,7 +54,7 @@ public class grab : MonoBehaviour {
 
 	void Update(){
 		if (inRange) {
-			//grabText.SetActive (true);
+			grabText.SetActive (true);
 			if (Input.GetKeyDown ("g") == true) {
 				if (triggeringApple.tag == "Apple") {
 					animator.SetBool (iG, true);
@@ -62,14 +62,14 @@ public class grab : MonoBehaviour {
 					myRightMiddleFingerRotation = myRightHandMiddleFinger.rotation;
 					myRightHandPosition = myRightHand.position;
 					triggeringApple.transform.parent = Erika.transform;
-					triggeringApple.transform.position = myRightHandPosition;
+					triggeringApple.transform.position = myRightMiddleFingerPosition;
 
 				}
 
 			} 
 		}
 		else {
-			//grabText.SetActive (false);
+			grabText.SetActive (false);
 		}
 		if (Input.GetKeyDown ("1") == true) {
 			ikActive = true;
@@ -123,7 +123,7 @@ public class grab : MonoBehaviour {
 		if (other.tag == "Apple") {
 			inRange = false;
 			triggeringApple = null;
-			//grabChangeText.text = "Press G to Grab";
+			grabChangeText.text = "Press G to Grab";
 		}
 	}
 }
