@@ -4,50 +4,28 @@ using UnityEngine;
 using UnityEngine.UI;
 using System;
 
+[RequireComponent(typeof(Animator))]
+
 public class grab : MonoBehaviour {
 
-	#region Data
-	[SerializeField]
-	Transform myRightHandMiddleFinger;
-	Transform myRightHand;
-	[SerializeField]
-	GameObject target;
-
-	Animator animator;
-	Transform Zoe;
-
+	protected Animator animator;
 	public bool ikActive = false;
 	public Transform rightHandObj = null;
 	public Transform lookObj = null;
-
-	private readonly int iG = Animator.StringToHash("isGrab");
-	static readonly Vector3 offset = new Vector3(0.2f, .04f, 0);
-
-	Vector3 myRightMiddleFingerPosition, myRightHandPosition;
-	Quaternion myRightMiddleFingerRotation;
 
 	private GameObject triggeringApple;
 	private bool inRange;
 	public GameObject grabText;
 	public Text grabChangeText;
 	public GameObject Erika;
-	#endregion
 
-	float percentComplete{
-		get{
-			AnimatorStateInfo currentAnimation = animator.GetCurrentAnimatorStateInfo (0);
-			float percent = currentAnimation.normalizedTime % 1;
-			percent *= 2;
-			if (percent > 1) {
-				percent = 2 - percent;
-			}
-			return percent;
-		}
-	}
+	private readonly int iG = Animator.StringToHash("isGrab");
+	private readonly int iThrow = Animator.StringToHash("isThrow");
 
-	private void Awake(){
+	public Rigidbody rgb; 
+	void Start(){
 		animator = GetComponent<Animator> ();
-		myRightHand = myRightHandMiddleFinger.parent;
+
 	}
 
 
@@ -58,27 +36,23 @@ public class grab : MonoBehaviour {
 			if (Input.GetKeyDown ("g") == true) {
 				if (triggeringApple.tag == "Apple") {
 					animator.SetBool (iG, true);
-					myRightMiddleFingerPosition = myRightHandMiddleFinger.position;
-					myRightMiddleFingerRotation = myRightHandMiddleFinger.rotation;
-					myRightHandPosition = myRightHand.position;
-					triggeringApple.transform.parent = Erika.transform;
-					triggeringApple.transform.position = myRightMiddleFingerPosition;
-
+					rgb.constraints = RigidbodyConstraints.FreezeAll;
 				}
 
 			} 
+
 		}
 		else {
 			grabText.SetActive (false);
 		}
-		if (Input.GetKeyDown ("1") == true) {
-			ikActive = true;
-
+		if (Input.GetKeyDown ("h") == true) {
+				animator.SetBool (iThrow, true);
+				rgb.constraints = RigidbodyConstraints.None;
 		} 
-		if (Input.GetKeyDown ("2") == true) {
-			ikActive = false;
 
-		} 
+	    if (Input.GetKeyUp ("h") == true) {
+			animator.SetBool (iThrow, false);
+		}
 	}
 	void OnAnimatorIK(){
 		if(animator) {
@@ -94,10 +68,10 @@ public class grab : MonoBehaviour {
 
 				// Set the right hand target position and rotation, if one has been assigned
 				if(rightHandObj != null) {
-					Vector3 targetPosition = target.transform.position;
-					targetPosition += myRightMiddleFingerPosition + myRightMiddleFingerRotation * offset - myRightHandPosition;
-					animator.SetIKPosition (AvatarIKGoal.RightHand, targetPosition);
-					animator.SetIKPositionWeight (AvatarIKGoal.RightHand, percentComplete);
+					animator.SetIKPositionWeight (AvatarIKGoal.RightHand, 1);
+					animator.SetIKRotationWeight (AvatarIKGoal.RightHand, 1);
+					animator.SetIKPosition (AvatarIKGoal.RightHand, rightHandObj.position);
+					animator.SetIKRotation (AvatarIKGoal.RightHand, rightHandObj.rotation);
 				}        
 
 			}
@@ -123,7 +97,13 @@ public class grab : MonoBehaviour {
 		if (other.tag == "Apple") {
 			inRange = false;
 			triggeringApple = null;
-			grabChangeText.text = "Press G to Grab";
+			grabChangeText.text = "";
 		}
+	}
+
+	public void GrabApple(){
+		triggeringApple.transform.parent = rightHandObj.transform;
+
+
 	}
 }
