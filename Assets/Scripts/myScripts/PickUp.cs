@@ -7,6 +7,6 @@ public class PickUp : MonoBehaviour {
 	public GameObject AppleScriptReference;
 
 	public void PickUpApple(){
-		AppleScriptReference.GetComponent<grab>().GrabApple();
+		//AppleScriptReference.GetComponent<grab>().GrabApple();
 	}
 }

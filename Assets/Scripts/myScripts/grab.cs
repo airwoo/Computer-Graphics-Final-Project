@@ -37,8 +37,9 @@ public class grab : MonoBehaviour {
 				if (triggeringApple.tag == "Apple") {
 					animator.SetBool (iG, true);
 					rgb.constraints = RigidbodyConstraints.FreezeAll;
-					GrabApple ();
 					triggeringApple.GetComponent<SphereCollider> ().enabled = false;
+					StartCoroutine (GrabApple ());
+
 				}
 
 			} 
@@ -103,7 +104,8 @@ public class grab : MonoBehaviour {
 		}
 	}
 
-	public void GrabApple(){
+	IEnumerator GrabApple(){
+		yield return new WaitForSecondsRealtime (2);
 		triggeringApple.transform.parent = rightHandObj.transform;
 		triggeringApple.transform.position = rightHandObj.transform.position;
 

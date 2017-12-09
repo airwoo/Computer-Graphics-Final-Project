@@ -8,8 +8,10 @@ public class MyBehaviorTree3 : MonoBehaviour {
 
 	public Transform[] wanders;
 	public GameObject[] npcs;
+	public GameObject[] enemies;
 	public GameObject player;
 	public GameObject guard;
+	public GameObject apple;
 	public InteractionObject grabber;
 	//public GameObject test;
 	//private BehaviorMecanim gd;
@@ -173,12 +175,36 @@ public class MyBehaviorTree3 : MonoBehaviour {
 		Func<bool> next = () => ((g.Value - a.Value).magnitude < 5.0f); 
 		Node trigger = new DecoratorLoop(new LeafInvert (next));
 		return
-			new Selector(new SequenceParallel(trigger,new SequenceShuffle(ST_ApproachAndWait(agent, wanders[7]),
+			new Selector(new SequenceParallel(trigger,new DecoratorLoop(new SequenceShuffle(ST_ApproachAndWait(agent, wanders[7]),
 				ST_ApproachAndWait(agent, wanders[8]),
 				ST_ApproachAndWait(agent, wanders[9]),
-				ST_ApproachAndWait(agent, wanders[10]))),
+				ST_ApproachAndWait(agent, wanders[10])))),
 			new Sequence(agent.GetComponent<BehaviorMecanim>().Node_OrientTowards(g),
 					agent.GetComponent<BehaviorMecanim>().ST_PlayHandGesture("surrender",3000)));
+	}
+	protected Node ST_Enemy(GameObject agent){
+		Val<Vector3> p = Val.V (() => player.transform.position);
+		Val<Vector3> a = Val.V (() => agent.transform.position);
+		Val<Vector3> ap = Val.V (() => apple.transform.position);
+		Val<Vector3> atop = Val.V (() => p.Value - a.Value);
+		Val<Vector3> f = Val.V (() => agent.transform.TransformPoint(Vector3.forward));
+		Val<bool> crouch = Val.V (() => player.GetComponent<Animator> ().GetBool ("isCrouch"));
+		Func<bool> act = () => (atop.Value.magnitude < 12.0f && Vector3.Dot (atop.Value.normalized, f.Value.normalized) > 0.6
+			|| !crouch.Value && atop.Value.magnitude < 5.0f || (ap.Value - a.Value).magnitude < 10.0f);
+		Func<bool> act2 = () => ((ap.Value - a.Value).magnitude <= 7.0f);
+		Node trigger1 = new DecoratorLoop( new LeafAssert (act));
+		Node trigger2 = new DecoratorLoop(new LeafAssert (act2));
+		Node trigger3 = new DecoratorLoop( new LeafInvert (act));
+		return new DecoratorForceStatus(RunStatus.Success, new Selector (new SequenceParallel (trigger3, new DecoratorLoop(new SequenceShuffle (ST_ApproachAndWait (agent, wanders[11]),
+			ST_ApproachAndWait (agent, wanders[12]),
+			ST_ApproachAndWait (agent, wanders[13]),
+			ST_ApproachAndWait (agent, wanders[14])))),
+			new SequenceParallel(trigger2, new Sequence(ST_ApproachAndWait(agent, apple.transform),
+				agent.GetComponent<BehaviorMecanim>().ST_PlayBodyGesture("pickupright", 2000),
+				agent.GetComponent<BehaviorMecanim>().ST_PlayFaceGesture("eat",3000))),
+			new SequenceParallel(trigger1,new Sequence (agent.GetComponent<BehaviorMecanim> ().ST_PlayFaceGesture ("roar", 3000),
+				agent.GetComponent<BehaviorMecanim> ().Node_RunTo (p)))
+		));
 	}
 	protected Node BuildTreeRoot()
 	{ 
@@ -207,7 +233,10 @@ public class MyBehaviorTree3 : MonoBehaviour {
 			new DecoratorLoop(NPCRoam(npcs[11])),
 			new Sequence(npcs[14].GetComponent<BehaviorMecanim>().Node_OrientTowards(npcs[3].transform.position), new DecoratorLoop(ST_Converse(npcs[14]))),
 			new DecoratorLoop(NPCStory4(npcs[15])),
-			new DecoratorLoop(NPCStory4(npcs[16]))
+			new DecoratorLoop(NPCStory4(npcs[16])),
+			new DecoratorLoop(ST_Enemy(enemies[0])),
+			new DecoratorLoop(ST_Enemy(enemies[1])),
+			new DecoratorLoop(ST_Enemy(enemies[2]))
 			);
 	}
 }
