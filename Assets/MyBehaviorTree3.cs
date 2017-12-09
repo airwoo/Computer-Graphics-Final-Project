@@ -76,6 +76,24 @@ public class MyBehaviorTree3 : MonoBehaviour {
 					ST_PlayHand(ag2,"CHEER")
 				)));
 	}
+	protected Node ST_Converse(GameObject agent){
+		return new SequenceParallel (
+			new SequenceShuffle (
+				ST_PlayFace (agent,"HEADSHAKE"),
+				ST_PlayFace(agent,"HEADNOD"),
+				ST_PlayFace(agent,"DRINK"),
+				ST_PlayFace(agent,"EAT"),
+				ST_PlayFace(agent,"SAD")
+			),
+			new SequenceShuffle (
+				ST_PlayHand(agent,"THINK"),
+				ST_PlayHand(agent,"CLAP"),
+				ST_PlayHand(agent,"YAWN"),
+				ST_PlayHand(agent,"WRITING"),
+				ST_PlayHand(agent,"CHEER")
+			));
+
+	}
 	protected Node ST_PlayConversation2(GameObject ag1, GameObject ag2){
 		Val<Vector3> p1 = Val.V (() => ag1.transform.position);
 		Val<Vector3> p2 = Val.V (() => ag2.transform.position);
@@ -115,6 +133,15 @@ public class MyBehaviorTree3 : MonoBehaviour {
 	
 		return new Sequence (ag1.GetComponent<BehaviorMecanim> ().Node_BodyAnimation("breakdance",true));
 	}
+	protected Node NPCStory4(GameObject agent){
+		Val<Vector3> a = Val.V (() => agent.transform.position);
+		Val<Vector3> g = Val.V (() => player.transform.position);
+		Func<bool> next = () => ((g.Value - a.Value).magnitude < 5.0f); 
+		Node trigger = new DecoratorLoop(new LeafInvert (next));
+		return	new Selector(new SequenceParallel(trigger,agent.GetComponent<BehaviorMecanim>().ST_PlayFaceGesture("drink",3000)),
+				new Sequence(agent.GetComponent<BehaviorMecanim>().Node_OrientTowards(g),
+					agent.GetComponent<BehaviorMecanim>().ST_PlayBodyGesture("fight",3000)));
+	}
 	protected Node MainStory(){
 		Val<Vector3> m = Val.V (() => npcs[5].transform.position + npcs[5].transform.forward*2);
 		Val<Vector3> p = Val.V (() => player.transform.position);
@@ -129,7 +156,29 @@ public class MyBehaviorTree3 : MonoBehaviour {
 			new LeafWait(5000),
 			guard.GetComponent<BehaviorMecanim>().Node_StopInteraction(FullBodyBipedEffector.RightHand))),
 			new Sequence(guard.GetComponent<BehaviorMecanim>().Node_RunTo(wanders[6].position),
-				guard.GetComponent<BehaviorMecanim>().ST_PlayHandGesture("pointing", 3000)));
+			guard.GetComponent<BehaviorMecanim>().ST_PlayHandGesture("pointing", 3000)));
+	}
+	protected Node NPCGate(GameObject agent){
+		Val<Vector3> a = Val.V (() => agent.transform.position);
+		Val<Vector3> g = Val.V (() => player.transform.position);
+		Func<bool> next = () => ((g.Value - a.Value).magnitude < 5.0f); 
+		Node trigger = new DecoratorLoop(new LeafAssert (next));
+		return new DecoratorForceStatus (RunStatus.Success, new SequenceParallel(trigger, 
+			new Sequence(agent.GetComponent<BehaviorMecanim>().Node_OrientTowards(g),
+				agent.GetComponent<BehaviorMecanim>().ST_PlayHandGesture("surrender",3000))));
+	}
+	protected Node NPCRoam(GameObject agent){
+		Val<Vector3> a = Val.V (() => agent.transform.position);
+		Val<Vector3> g = Val.V (() => player.transform.position);
+		Func<bool> next = () => ((g.Value - a.Value).magnitude < 5.0f); 
+		Node trigger = new DecoratorLoop(new LeafInvert (next));
+		return
+			new Selector(new SequenceParallel(trigger,new SequenceShuffle(ST_ApproachAndWait(agent, wanders[7]),
+				ST_ApproachAndWait(agent, wanders[8]),
+				ST_ApproachAndWait(agent, wanders[9]),
+				ST_ApproachAndWait(agent, wanders[10]))),
+			new Sequence(agent.GetComponent<BehaviorMecanim>().Node_OrientTowards(g),
+					agent.GetComponent<BehaviorMecanim>().ST_PlayHandGesture("surrender",3000)));
 	}
 	protected Node BuildTreeRoot()
 	{ 
@@ -147,7 +196,18 @@ public class MyBehaviorTree3 : MonoBehaviour {
 			new DecoratorLoop(NPCStory1(npcs[1], npcs[2])),
 			new Sequence(ST_FaceEachOther(npcs[0],npcs[3]), new DecoratorLoop(NPCStory2(npcs[0],npcs[3]))),
 				new DecoratorLoop(NPCStory3(npcs[4])),
-			new DecoratorLoop(new Sequence(ST_PlayFace(npcs[5],"sad"), ST_PlayHand(npcs[5],"cry")))
+			new DecoratorLoop(new Sequence(ST_PlayFace(npcs[5],"sad"), ST_PlayHand(npcs[5],"cry"))),
+			new DecoratorLoop(NPCGate(npcs[6])),
+			new DecoratorLoop(NPCGate(npcs[7])),
+			new DecoratorLoop(NPCGate(npcs[12])),
+			new DecoratorLoop(NPCGate(npcs[13])),
+			new DecoratorLoop(NPCRoam(npcs[8])),
+			new DecoratorLoop(NPCRoam(npcs[9])),
+			new DecoratorLoop(NPCRoam(npcs[10])),
+			new DecoratorLoop(NPCRoam(npcs[11])),
+			new Sequence(npcs[14].GetComponent<BehaviorMecanim>().Node_OrientTowards(npcs[3].transform.position), new DecoratorLoop(ST_Converse(npcs[14]))),
+			new DecoratorLoop(NPCStory4(npcs[15])),
+			new DecoratorLoop(NPCStory4(npcs[16]))
 			);
 	}
 }
