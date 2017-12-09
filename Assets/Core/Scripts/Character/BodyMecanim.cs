@@ -393,6 +393,9 @@ public class BodyMecanim : MonoBehaviour
 			case "KILL":
 				this.animator.SetBool ("H_Kill", isActive);
 				break;
+			case "SALUTE":
+				this.animator.SetBool ("H_Salute", isActive);
+				break;
         }
     }
 
