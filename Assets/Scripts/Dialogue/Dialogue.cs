@@ -57,11 +57,11 @@ public class Dialogue : MonoBehaviour
                 }
                 if (triggeringNpc.tag == "NPC3")
                 {
-                    changeText.text = "Poor lady. I can't believe she lost her child to the wolves.";
+                    changeText.text = "Poor lady. I can't believe she lost her child to the beasts.";
                 }
                 if (triggeringNpc.tag == "NPC4")
                 {
-                    changeText.text = "I heard wolves love apples.";
+                    changeText.text = "I heard beasts love apples.";
                     sideQuestText.text = "Side Quest: Find Apples";
                 }
                 if (triggeringNpc.tag == "NPC5")
@@ -70,7 +70,7 @@ public class Dialogue : MonoBehaviour
                 }
                 if (triggeringNpc.tag == "NPC6")
                 {
-                    changeText.text = "Please help me! My child was taken away by a pack of wolves! Please bring him back to me!";
+                    changeText.text = "Please help me! My child was taken away by a pack of beasts! Please bring him back to me!";
                     questText.text = "Active Quest: Save Child";
                 }
                 if (triggeringNpc.tag == "NPC7")
