@@ -8,5 +8,6 @@ public class Throwing : MonoBehaviour {
 
 	public void ThrowBall(){
 		ballScriptReference.GetComponent<BallScript> ().ReleaseBall ();
+		ballScriptReference.GetComponent<SphereCollider> ().enabled = true;
 	}
 }

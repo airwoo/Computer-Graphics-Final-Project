@@ -12,6 +12,7 @@ public class BallScript : MonoBehaviour {
 	void Start(){
 		RBody.useGravity = false;
 		hasBeenThrown = false;
+		RBody.isKinematic = true;
 	}
 
 	void Update(){
@@ -21,6 +22,7 @@ public class BallScript : MonoBehaviour {
 	public void ReleaseBall(){
 		transform.parent = null;
 		RBody.useGravity = true;
+		RBody.isKinematic = false;
 		transform.rotation = ParentBone.transform.rotation;
 		RBody.AddForce (transform.forward * Force);
 		hasBeenThrown = true;
