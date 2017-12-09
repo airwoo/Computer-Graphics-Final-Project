@@ -61,7 +61,9 @@ public class grab : MonoBehaviour {
 					myRightMiddleFingerPosition = myRightHandMiddleFinger.position;
 					myRightMiddleFingerRotation = myRightHandMiddleFinger.rotation;
 					myRightHandPosition = myRightHand.position;
-					triggeringApple.transform.parent = myRightHand;
+					triggeringApple.transform.parent = Erika.transform;
+					triggeringApple.transform.position = myRightHandPosition;
+
 				}
 
 			} 
