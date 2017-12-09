@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 public class grab : MonoBehaviour {
@@ -24,6 +25,12 @@ public class grab : MonoBehaviour {
 
 	Vector3 myRightMiddleFingerPosition, myRightHandPosition;
 	Quaternion myRightMiddleFingerRotation;
+
+	private GameObject triggeringApple;
+	private bool inRange;
+	//public GameObject grabText;
+	//public Text grabChangeText;
+	public GameObject Erika;
 	#endregion
 
 	float percentComplete{
@@ -46,15 +53,22 @@ public class grab : MonoBehaviour {
 
 
 	void Update(){
-		
-		if (Input.GetKeyDown ("g") == true) {
-			
-			animator.SetBool (iG, true);
-			myRightMiddleFingerPosition = myRightHandMiddleFinger.position;
-			myRightMiddleFingerRotation = myRightHandMiddleFinger.rotation;
-			myRightHandPosition = myRightHand.position;
+		if (inRange) {
+			//grabText.SetActive (true);
+			if (Input.GetKeyDown ("g") == true) {
+				if (triggeringApple.tag == "Apple") {
+					animator.SetBool (iG, true);
+					myRightMiddleFingerPosition = myRightHandMiddleFinger.position;
+					myRightMiddleFingerRotation = myRightHandMiddleFinger.rotation;
+					myRightHandPosition = myRightHand.position;
+					triggeringApple.transform.parent = myRightHand;
+				}
 
-		} 
+			} 
+		}
+		else {
+			//grabText.SetActive (false);
+		}
 		if (Input.GetKeyDown ("1") == true) {
 			ikActive = true;
 
@@ -95,5 +109,19 @@ public class grab : MonoBehaviour {
 		}
 
 
+	}
+
+	void OnTriggerEnter(Collider other){
+		if (other.tag == "Apple") {
+			inRange = true;
+			triggeringApple = other.gameObject;
+		}
+	}
+	void OnTriggerExit(Collider other){
+		if (other.tag == "Apple") {
+			inRange = false;
+			triggeringApple = null;
+			//grabChangeText.text = "Press G to Grab";
+		}
 	}
 }
