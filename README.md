@@ -1,2 +1,2 @@
-# Computer-Graphics-Final-Project
-The Werewolf's Den
+# Unity
+General Unity Playground with all needed assets
