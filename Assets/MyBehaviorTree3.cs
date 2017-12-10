@@ -210,12 +210,17 @@ public class MyBehaviorTree3 : MonoBehaviour {
 		Val<Vector3> p = Val.V (() => player.transform.position);
 		Val<Vector3> p2 = Val.V (() => player.transform.position+player.transform.TransformDirection(Vector3.right)*2.0f);
 		Val<Vector3> a = Val.V (() => agent.transform.position);
+		Val<Vector3> m = Val.V (() => npcs [5].transform.position);
 		Func<bool> act = () => ((a.Value-p.Value).magnitude < 10.0f);
+		Func<bool> act2 = () => ((a.Value-m.Value).magnitude < 5.0f);
 		Node trigger1 = new DecoratorLoop( new LeafAssert (act));
 		Node trigger2 = new DecoratorLoop( new LeafInvert (act));
-		return new DecoratorForceStatus (RunStatus.Success, new Selector (new SequenceParallel(trigger1,
+		Node trigger3 = new DecoratorLoop (new LeafAssert (act2));
+		Node trigger4 = new DecoratorLoop (new LeafInvert (act2));
+		return new DecoratorForceStatus (RunStatus.Success, new Selector (new SequenceParallel(trigger1, trigger4,
 			new DecoratorLoop(agent.GetComponent<BehaviorMecanim>().Node_RunToUpToRadius(p2, 1.0f))),
-			new SequenceParallel(trigger2,new DecoratorLoop(agent.GetComponent<BehaviorMecanim>().ST_PlayBodyGesture("duck",2000)))));
+			new SequenceParallel(trigger2, trigger4, new DecoratorLoop(agent.GetComponent<BehaviorMecanim>().ST_PlayBodyGesture("duck",2000))),
+			new SequenceParallel(trigger3, new DecoratorLoop(agent.GetComponent<BehaviorMecanim>().ST_PlayHandGesture("cheer", 5000)))));
 
 	}
 	protected Node BuildTreeRoot()
