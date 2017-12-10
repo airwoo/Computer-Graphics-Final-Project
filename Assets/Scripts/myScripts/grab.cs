@@ -37,6 +37,7 @@ public class grab : MonoBehaviour {
 				if (triggeringApple.tag == "Apple") {
 					animator.SetBool (iG, true);
 					rgb.constraints = RigidbodyConstraints.FreezeAll;
+					rgb.useGravity = false;
 					triggeringApple.GetComponent<SphereCollider> ().enabled = false;
 					StartCoroutine (GrabApple ());
 
