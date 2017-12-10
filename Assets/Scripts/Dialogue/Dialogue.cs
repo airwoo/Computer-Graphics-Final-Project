@@ -16,9 +16,13 @@ public class Dialogue : MonoBehaviour
 
     public int countNextDialogue = 0;
 
+	private bool savedHusband;
+	private bool returned;
+
     void Start()
     {
-
+		savedHusband = false;
+		returned = false;
     }
 
     void Update()
@@ -45,7 +49,7 @@ public class Dialogue : MonoBehaviour
                 }
                 if (triggeringNpc.CompareTag("gate"))
                 {
-                    changeText.text = "I hope you bring that baby back ranger!";
+                    changeText.text = "I hope you bring that man back ranger!";
                 }
                 if (triggeringNpc.CompareTag("march"))
                 {
@@ -70,8 +74,14 @@ public class Dialogue : MonoBehaviour
                 }
                 if (triggeringNpc.tag == "NPC6")
                 {
-                    changeText.text = "Please help me! My husband was taken away by a pack of beasts! Please bring him back to me!";
-                    questText.text = "Active Quest: Save Child";
+					if (savedHusband == true) {
+						changeText.text = "Thank you so much! You truly are a hero!";
+						questText.text = "Active Quest: None";
+						returned = true;
+					} else {
+						changeText.text = "Please help me! My husband was taken away by a pack of beasts! Please bring him back to me!";
+						questText.text = "Active Quest: Save Man";
+					}
                 }
                 if (triggeringNpc.tag == "NPC7")
                 {
@@ -82,7 +92,14 @@ public class Dialogue : MonoBehaviour
                     changeText.text = "Don't mess with me! I'll smash you to bits!";
                 }
 				if(triggeringNpc.CompareTag("Husband")){
-					changeText.text = "P-P-Please save me!";
+					if (returned == true) {
+						changeText.text = "I am greatly indebted to you! Bless you!";
+					}
+					else{
+						changeText.text = "P-P-Please save me!";
+						questText.text = "Active Quest: Return Safely";
+						savedHusband = true;
+					}
 				}
             }
         }
