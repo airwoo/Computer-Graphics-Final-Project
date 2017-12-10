@@ -206,6 +206,17 @@ public class MyBehaviorTree3 : MonoBehaviour {
 				agent.GetComponent<BehaviorMecanim> ().Node_RunTo (p)))
 		));
 	}
+	protected Node NPC_Husband(GameObject agent){
+		Val<Vector3> p = Val.V (() => player.transform.position);
+		Val<Vector3> a = Val.V (() => agent.transform.position);
+		Func<bool> act = () => ((a.Value-p.Value).magnitude < 10.0f);
+		Node trigger1 = new DecoratorLoop( new LeafAssert (act));
+		Node trigger2 = new DecoratorLoop( new LeafInvert (act));
+		return new DecoratorForceStatus (RunStatus.Success, new Selector (new SequenceParallel(trigger1,
+			new DecoratorLoop(agent.GetComponent<BehaviorMecanim>().Node_RunToUpToRadius(p, 1.0f))),
+			new SequenceParallel(trigger2,new DecoratorLoop(agent.GetComponent<BehaviorMecanim>().ST_PlayBodyGesture("duck",2000)))));
+
+	}
 	protected Node BuildTreeRoot()
 	{ 
 		Val<Vector3> p = Val.V (() => player.transform.position);
@@ -236,7 +247,8 @@ public class MyBehaviorTree3 : MonoBehaviour {
 			new DecoratorLoop(NPCStory4(npcs[16])),
 			new DecoratorLoop(ST_Enemy(enemies[0])),
 			new DecoratorLoop(ST_Enemy(enemies[1])),
-			new DecoratorLoop(ST_Enemy(enemies[2]))
+			new DecoratorLoop(ST_Enemy(enemies[2])),
+			new DecoratorLoop(NPC_Husband(npcs[17]))
 			);
 	}
 }

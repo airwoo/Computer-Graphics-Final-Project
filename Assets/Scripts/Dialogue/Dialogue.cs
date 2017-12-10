@@ -57,7 +57,7 @@ public class Dialogue : MonoBehaviour
                 }
                 if (triggeringNpc.tag == "NPC3")
                 {
-                    changeText.text = "Poor lady. I can't believe she lost her child to the beasts.";
+                    changeText.text = "Poor lady. I can't believe she lost her hsuband to the beasts.";
                 }
                 if (triggeringNpc.tag == "NPC4")
                 {
@@ -70,7 +70,7 @@ public class Dialogue : MonoBehaviour
                 }
                 if (triggeringNpc.tag == "NPC6")
                 {
-                    changeText.text = "Please help me! My child was taken away by a pack of beasts! Please bring him back to me!";
+                    changeText.text = "Please help me! My husband was taken away by a pack of beasts! Please bring him back to me!";
                     questText.text = "Active Quest: Save Child";
                 }
                 if (triggeringNpc.tag == "NPC7")
@@ -81,6 +81,9 @@ public class Dialogue : MonoBehaviour
                 {
                     changeText.text = "Don't mess with me! I'll smash you to bits!";
                 }
+				if(triggeringNpc.CompareTag("Husband")){
+					changeText.text = "P-P-Please save me!";
+				}
             }
         }
         else
@@ -93,7 +96,7 @@ public class Dialogue : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "NPC1" || other.tag == "NPC2" || other.tag == "NPC3" || other.tag == "NPC4" || other.tag == "NPC5" || other.tag == "NPC6" ||
-            other.tag == "NPC7" || other.CompareTag("gate") || other.CompareTag("march") || other.CompareTag("NPC8"))
+			other.tag == "NPC7" || other.CompareTag("gate") || other.CompareTag("march") || other.CompareTag("NPC8") || other.CompareTag("Husband"))
         {
             triggering = true;
             triggeringNpc = other.gameObject;
@@ -103,7 +106,7 @@ public class Dialogue : MonoBehaviour
     void OnTriggerExit(Collider other)
     {
         if (other.tag == "NPC1" || other.tag == "NPC2" || other.tag == "NPC3" || other.tag == "NPC4" || other.tag == "NPC5" || other.tag == "NPC6" ||
-            other.tag == "NPC7" || other.CompareTag("gate") || other.CompareTag("march") || other.CompareTag("NPC8"))
+			other.tag == "NPC7" || other.CompareTag("gate") || other.CompareTag("march") || other.CompareTag("NPC8") || other.CompareTag("Husband"))
         {
             triggering = false;
             triggeringNpc = null;
