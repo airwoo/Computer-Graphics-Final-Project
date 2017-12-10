@@ -37,7 +37,7 @@ public class Dialogue : MonoBehaviour
                 {
                     if (countNextDialogue < 4)
                     {
-                        changeText.text = "Hello hero! Follow me! A mother needs help!";
+                        changeText.text = "Hello hero! Follow me! A lady needs help!";
                         questText.text = "Active Quest: Follow Guard";
                         sideQuestText.text = "Side Quest: Get Information";
                     }
@@ -61,7 +61,7 @@ public class Dialogue : MonoBehaviour
                 }
                 if (triggeringNpc.tag == "NPC3")
                 {
-                    changeText.text = "Poor lady. I can't believe she lost her hsuband to the beasts.";
+                    changeText.text = "Poor lady. I can't believe she lost her husband to the beasts.";
                 }
                 if (triggeringNpc.tag == "NPC4")
                 {
