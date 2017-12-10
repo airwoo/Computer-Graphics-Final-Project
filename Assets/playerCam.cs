@@ -61,7 +61,7 @@ public class playerCam : MonoBehaviour {
 
 		bool isCorrected = false;
 		if (Physics.Linecast (cameraTargetPosition, position, out collisionHit)) {
-			
+			Debug.Log (collisionHit.collider.tag);
 			position = collisionHit.point;
 			correctedDistance = Vector3.Distance (cameraTargetPosition, position);
 			isCorrected = true;
